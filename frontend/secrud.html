@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secured Page</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Secured Page</h2>
+  <div id="message"></div>
+  <button onclick="loadSecure()">Load Secured Data</button>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+async function loadSecure() {
+  const token = localStorage.getItem('token');
+  if(!token) { alert('Please login first'); return; }
+
+  const res = await fetch('http://localhost:5000/api/auth/secure', {
+    headers: { 'x-auth-token': token }
+  });
+
+  const data = await res.json();
+  document.getElementById('message').innerText = JSON.stringify(data);
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  window.location.href = "index.html";
+}
+
+// Auto redirect if not logged in
+if(!localStorage.getItem('token')) {
+  window.location.href = "index.html";
+}
+</script>
+</body>
+</html>
